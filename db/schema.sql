@@ -6,9 +6,36 @@ CREATE DATABASE employeeTracker_db;
 
 -- switches to the employeeTracker database
 \c employeeTracker_db
-
-CREATE TABLE department()
-
-CREATE TABLE employee()
-
-CREATE TABLE role ()
+--  creates the department table and the id auto increments with each addition of a department
+CREATE TABLE department(
+    id SERIAL PRIMARY KEY, 
+    name VARCHAR(30) UNIQUE NOT NULL
+)
+--  creates the role table and the id auto increments with each addition of a role
+CREATE TABLE role(
+    id SERIAL PRIMARY KEY, 
+    title VARCHAR(30) UNIQUE NOT NULL, 
+    salary DECIMAL NOT NULL, 
+    department_id INT NOT NULL, 
+    -- links the department table
+    FOREIGN KEY (department_id)
+    REFERENCES department(id)
+    ON DELETE SET NULL
+    
+)
+--  creates the employee table and the id auto increments with each addition of an employee
+CREATE TABLE employee (
+    id SERIAL PRIMARY KEY, 
+    first_name VARCHAR(30) NOT NULL,
+    last_name VARCHAR(30) NOT NULL, 
+    role_id INTEGER NOT NULL, 
+    manager_id INTEGER NULL, 
+    -- links the role table 
+    FOREIGN KEY (role_id)
+    REFERENCES role(role_id)
+    ON DELETE SET NULL, 
+    --  the manager id is the same as the employee id 
+    FOREIGN KEY (manager_id)
+    REFERENCES employee(employee_id)
+    ON DELETE SET NULL, 
+)

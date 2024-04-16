@@ -1,6 +1,8 @@
 const inquirer = require("inquirer");
 const db = require("./db");
+const pg  = require('pg');
 
+require('dotenv').config();
 
 
 //initial question and options that the user will be provided with 
