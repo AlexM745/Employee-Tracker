@@ -24,6 +24,7 @@
   "homepage": "https://github.com/AlexM745/Employee-Tracker.githttps:#readme",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "figlet": "^1.7.0",
     "inquirer": "^8.2.4",
     "mysql2": "^3.9.4",
     "pg": "^8.11.5"
