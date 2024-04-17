@@ -1,8 +1,29 @@
 const inquirer = require("inquirer");
 const db = require("./db");
-const pg  = require('pg');
 
+//  creating a connection pool 
+const { Pool } = require('pg');
+
+// enables access to the .env variables
 require('dotenv').config();
+
+// uses the environment variables to connect to database
+const pool = new Pool(
+
+    {
+        database: process.env.DB_NAME,
+        password: process.env.DB_PASSWORD,
+        user: process.env.DB_USER,
+        host: "localhost",
+    },
+    console.log('Connected to the employeeTracker_db database.')
+)
+// calling pool to use the environment vatiables to start the connection to database
+pool.connect((error) =>{
+    if (error) throw error;
+    console.log("Did not connect!");
+    beginning();
+});
 
 
 //initial question and options that the user will be provided with 
@@ -24,7 +45,7 @@ beginning = () => {
             ]
         }
     ])
-    // the answer switch cases that depending on the user selection from the list that was given at beginning
+        // the answer switch cases that depending on the user selection from the list that was given at beginning
         .then((answer) => {
             // this switch is for the user input cases
             switch (answer.start) {
@@ -47,10 +68,10 @@ beginning = () => {
                 case "Update Employee Roles":
                     updateRoles();
                     break;
-                    // this exit selection will end the connection with SQL and will display the following message on the terminal
+                // this exit selection will end the connection with SQL and will display the following message on the terminal
                 case "Exit":
                     connection.end();
-                    console.log (" You have logged off the Employee tracker!\n")
+                    console.log(" You have logged off the Employee tracker!\n")
                     return;
                 // if no choice is made then the console will 
                 default:
