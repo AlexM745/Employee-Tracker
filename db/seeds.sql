@@ -16,7 +16,7 @@ INSERT INTO roles (title, salary, department_id)
 VALUES
 ('Lead Game Producer', 120000, 1),
 ('Game Publisher', 150000, 1),
-('Assistant Game Producer', 55000, 1),
+('Game Producer', 55000, 1),
 ('Lead Game Designer', 130000, 2), 
 ('GamePlay Designer', 100000, 2),
 ('Level Designer', 90000, 2), 
@@ -34,12 +34,13 @@ VALUES
 ('Engine Programmer', 100000, 7),
 ('Gameplay Programmer', 100000, 7),
 ('Game tester', 60000, 8), 
-('Quality Assurance Build Engineer', 110000, 8);
+('QA Build Engineer', 110000, 8);
 
 
 -- this are all the employees with there role id and who is thier manager
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
-VALUES('Bill','Fellows', 1, 2),
+VALUES
+('Bill','Fellows', 1, 2),
 ('Jason','Haller', 2, NULL), 
 ('John','Santana', 3, 1), 
 ('Robert','Smith', 4, 3), 

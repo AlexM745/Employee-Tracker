@@ -12,7 +12,7 @@ CREATE TABLE department(
     department_name VARCHAR(30) UNIQUE NOT NULL
 );
 --  creates the role table and the id auto increments with each addition of a role
-CREATE TABLE roles (
+CREATE TABLE roles(
     id SERIAL PRIMARY KEY, 
     title VARCHAR(30) UNIQUE NOT NULL, 
     salary DECIMAL NOT NULL, 
@@ -24,7 +24,7 @@ CREATE TABLE roles (
     
 );
 --  creates the employee table and the id auto increments with each addition of an employee
-CREATE TABLE employee (
+CREATE TABLE employee(
     id SERIAL PRIMARY KEY, 
     first_name VARCHAR(30) NOT NULL,
     last_name VARCHAR(30) NOT NULL, 
