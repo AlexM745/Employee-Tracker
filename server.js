@@ -95,8 +95,13 @@ beginning = () => {
 
 viewEmployees = () => {
     pool.query(`
-    SELECT id, first_name, last_name, role_id, manager_id
-	FROM employee;`, (error, res) => {
+    SELECT e.id, e.first_name, e.last_name,roles.title, department.department_name, roles.salary, 
+    CONCAT(m.first_name, ' ', m.last_name) manager 
+    FROM employee m 
+    JOIN employee e ON e.manager_id = m.id 
+    JOIN roles ON e.role_id = roles.id 
+    JOIN department ON department.id = roles.department_id 
+    ORDER BY e.id ASC;`, (error, res) => {
         if (error) throw (error);
         console.table(res.rows);
         beginning();
@@ -116,7 +121,7 @@ viewDepartments = () => {
 addEmployee = () => {
     pool.query(`SELECT * FROM roles;`, (error, res) => {
         if (error) throw error;
-        let roles = res.map(roles => ({name: roles.title, value: roles.id }));
+        let roles = res.map(roles => ({ name: roles.title, value: roles.id }));
         pool.query(`SELECT * FROM employee;`, (error, res) => {
             if (error) throw error;
             let employees = res.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
