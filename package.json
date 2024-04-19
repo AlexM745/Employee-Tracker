@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/AlexM745/Employee-Tracker.githttps:#readme",
   "dependencies": {
+    "console.table": "^0.10.0",
     "dotenv": "^16.4.5",
     "figlet": "^1.7.0",
     "inquirer": "^8.2.4",
