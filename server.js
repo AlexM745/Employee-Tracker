@@ -227,7 +227,44 @@ addRole = () => {
     })
 }
 
+// update an employee's role
+updateEmployee = () => {
+    pool.query(`SELECT * FROM roles;`, (error, res) => {
+        if (error) throw error;
+        let roles = res.map(roles => ({ name: roles.title, value: roles.id }));
+        pool.query(`SELECT * FROM employee;`, (error, res) => {
+            if (error) throw error;
+            let employees = res.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
 
+            inquirer.prompt([
+            // to pick the employee to update
+                {
+                    type: "rawlist",
+                    name: "updateEmployee",
+                    message: "Choose the employee you would like to do a role update for:",
+                    choices: employees
+                },
+                // the new title or role the employe will have
+                {
+                    type: "rawlist",
+                    name: "newTitle",
+                    message: "What is the new role of the employee?",
+                    choices: roles
+                    
+                }])
+                // adding the anwers to the data base
+                .then((answers) => {
+                    pool.query(`UPDATE employee SET ? WHERE ?`, [{role_id: answers.newTitle},{id: answers.updateEmployee} ], (error, res) => {
+
+                        if (error) throw (error);
+                        console.log("Updated the employees role");
+                        beginning();
+                    })
+                });
+
+        })
+    })
+}
 
 
 
