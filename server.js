@@ -92,7 +92,7 @@ beginning = () => {
             }
         })
 }
-
+// see all the employees 
 viewEmployees = () => {
     pool.query(`
     SELECT e.id, e.first_name, e.last_name,roles.title, department.department_name, roles.salary, 
@@ -102,17 +102,17 @@ viewEmployees = () => {
     JOIN roles ON e.role_id = roles.id 
     JOIN department ON department.id = roles.department_id 
     ORDER BY e.id ASC;`, (error, res) => {
-        if (error) throw (error);
+        if (error) throw error;
         console.table(res.rows);
         beginning();
     })
 }
-
+// see all the departments
 viewDepartments = () => {
     pool.query(`
     SELECT * FROM department
     ORDER BY id ASC; `, (error, res) => {
-        if (error) throw (error);
+        if (error) throw error;
         console.table(res.rows);
         beginning();
     })
@@ -121,10 +121,10 @@ viewDepartments = () => {
 addEmployee = () => {
     pool.query(`SELECT * FROM roles;`, (error, res) => {
         if (error) throw error;
-        let roles = res.map(roles => ({ name: roles.title, value: roles.id }));
+        let roles = res.rows.map(roles => ({ name: roles.title, value: roles.id }));
         pool.query(`SELECT * FROM employee;`, (error, res) => {
             if (error) throw error;
-            let employees = res.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
+            let employees = res.rows.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
 
             inquirer.prompt([
                 //  the first name of new employee
@@ -157,9 +157,9 @@ addEmployee = () => {
 
                 }])
                 .then((answers) => {
-                    pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES(?,?,?,?)`, [answers.firstname, answers.lastname, answers.roles, answers.manager.id], (error, res) => {
+                    pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES($1,$2,$3,$4)`, [answers.firstname, answers.lastname, answers.roles, answers.manager.id], (error, res) => {
 
-                        if (error) throw (error);
+                        if (error) throw error;
                         console.log(`Added ${answers.firstname} ${answers.lastname} to database.`);
                         beginning();
                     })
@@ -179,12 +179,11 @@ addDepartment = () => {
         }])
         .then((answer) => {
             // new department is added to database
-            pool.query(`INSERT INTO department (department_name) VALUES(?)`, [answer.newDepartment], (error, res) => {
-
-                if (error) throw (error);
-                console.log(`${answer.department} department was added to database.`);
+            pool.query(`INSERT INTO department (department_name) VALUES ($1)`, [answer.newDepartment], (error, res) => {
+                if (error) throw error;
+                console.log(`${answer.newDepartment} department was added to database.`);
                 beginning();
-            })
+            });
         });
 }
 
@@ -192,7 +191,7 @@ addDepartment = () => {
 addRole = () => {
     pool.query(`SELECT * FROM department;`, (error, res) => {
         if (error) throw error;
-        let departments = res.map(department => ({ name: department.department_name, value: department.id }));
+        let departments = res.rows.map(department => ({ name: department.department_name, value: department.id }));
 
         inquirer.prompt([
             //  title of the new role
@@ -217,8 +216,8 @@ addRole = () => {
                 choices: departments
             }])
             .then((answers) => {
-                pool.query(`INSERT INTO roles (title, salary, department_id) VALUES(?,?,?)`, [answers.title, answers.salary, answers.departmentName], (error, res) => {
-                    if (error) throw (error);
+                pool.query(`INSERT INTO roles (title, salary, department_id) VALUES($1,$2,$3)`, [answers.title, answers.salary, answers.departmentName], (error, res) => {
+                    if (error)throw error;
                     console.log(`Added ${answers.title} to database.`);
                     beginning();
                 })
@@ -228,13 +227,13 @@ addRole = () => {
 }
 
 // update an employee's role
-updateEmployee = () => {
+updateRoles = () => {
     pool.query(`SELECT * FROM roles;`, (error, res) => {
         if (error) throw error;
-        let roles = res.map(roles => ({ name: roles.title, value: roles.id }));
+        let roles = res.rows.map(roles => ({ name: roles.title, value: roles.id }));
         pool.query(`SELECT * FROM employee;`, (error, res) => {
             if (error) throw error;
-            let employees = res.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
+            let employees = res.rows.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
 
             inquirer.prompt([
             // to pick the employee to update
@@ -254,10 +253,10 @@ updateEmployee = () => {
                 }])
                 // adding the anwers to the data base
                 .then((answers) => {
-                    pool.query(`UPDATE employee SET ? WHERE ?`, [{role_id: answers.newTitle},{id: answers.updateEmployee} ], (error, res) => {
+                    pool.query(`UPDATE employee SET role_id = ($1) WHERE id = ($2)`, [answers.newTitle, answers.updateEmployee], (error, res) => {
 
-                        if (error) throw (error);
-                        console.log("Updated the employees role");
+                        if (error) throw error;
+                        console.log("Updated the employee's role");
                         beginning();
                     })
                 });
