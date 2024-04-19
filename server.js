@@ -98,7 +98,7 @@ viewEmployees = () => {
     SELECT e.id, e.first_name, e.last_name,roles.title, department.department_name, roles.salary, 
     CONCAT(m.first_name, ' ', m.last_name) manager 
     FROM employee m 
-    JOIN employee e ON e.manager_id = m.id 
+    RIGHT JOIN employee e ON e.manager_id = m.id 
     JOIN roles ON e.role_id = roles.id 
     JOIN department ON department.id = roles.department_id 
     ORDER BY e.id ASC;`, (error, res) => {
@@ -168,35 +168,64 @@ addEmployee = () => {
         })
     })
 }
-
-
-
-
+// add new department to database
 addDepartment = () => {
+    // the name of the new department
     inquirer.prompt([
         {
             type: "input",
             name: "newDepartment",
             message: "What is the name of the new department?",
-            validate: deparmentInput => {
-                if (deparmentInput) {
-                    return true;
-                } else {
-                    console.log("Add a department");
-                    return false;
-                }
-            }
         }])
         .then((answer) => {
-            pool.query(`INSERT INTO department (department_name) VALUES(?)`, [answer.newDeparment], (error, res) => {
+            // new department is added to database
+            pool.query(`INSERT INTO department (department_name) VALUES(?)`, [answer.newDepartment], (error, res) => {
 
                 if (error) throw (error);
-                console.log(`${answer.deparment} department was added to database.`);
+                console.log(`${answer.department} department was added to database.`);
                 beginning();
             })
         });
 }
 
+// add a new role to database
+addRole = () => {
+    pool.query(`SELECT * FROM department;`, (error, res) => {
+        if (error) throw error;
+        let departments = res.map(department => ({ name: department.department_name, value: department.id }));
+
+        inquirer.prompt([
+            //  title of the new role
+            {
+                type: "input",
+                name: "title",
+                message: "What is the title of the new role?",
+
+            },
+            // the salary of the role
+            {
+                type: "input",
+                name: "salary",
+                message: "What is the salary for the new role?",
+
+            },
+            // the department name for the new role
+            {
+                type: "rawlist",
+                name: "departmentName",
+                message: "Which Department does the new role belong to?",
+                choices: departments
+            }])
+            .then((answers) => {
+                pool.query(`INSERT INTO roles (title, salary, department_id) VALUES(?,?,?)`, [answers.title, answers.salary, answers.departmentName], (error, res) => {
+                    if (error) throw (error);
+                    console.log(`Added ${answers.title} to database.`);
+                    beginning();
+                })
+            });
+
+    })
+}
 
 
 
