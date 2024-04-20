@@ -176,14 +176,18 @@ addEmployee = () => {
                     message: "Who is the manager of the new employee?",
                     choices: employees
 
-                }])
+                }, 
+            ])
                 .then((answers) => {
-                    pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES($1,$2,$3,$4)`, [answers.firstname, answers.lastname, answers.roles, answers.manager.id], (error, res) => {
-
+                    pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) SELECT ($1) AS first_name, ($2) AS last_name, ($3) AS role_id, ($4) AS manager_id`, [answers.firstname, answers.lastname, answers.role, answers.manager], (error, res) => {
                         if (error) throw error;
                         console.log(`Added ${answers.firstname} ${answers.lastname} to database.`);
                         beginning();
+                        
                     })
+                   
+                       
+                    
                 });
 
         })
@@ -235,7 +239,8 @@ addRole = () => {
                 name: "departmentName",
                 message: "Which Department does the new role belong to?",
                 choices: departments
-            }])
+            },
+        ])
             .then((answers) => {
                 pool.query(`INSERT INTO roles (title, salary, department_id) VALUES($1,$2,$3)`, [answers.title, answers.salary, answers.departmentName], (error, res) => {
                     if (error) throw error;

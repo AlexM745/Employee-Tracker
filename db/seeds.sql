@@ -3,7 +3,6 @@ INSERT INTO department (department_name)
 VALUES
 ('Production'), 
 ('Design'), 
-('Game Developer'), 
 ('Art Department'), 
 ('Animation'), 
 ('Technical Art'), 
