@@ -17,9 +17,9 @@
 
   The GIF below will show functionality and appearance.
 
-  ![Terminal is running the Employee Tracker application asking the user questions and the user is responding]();
+  ![Terminal is running the Employee Tracker application asking the user questions and the user is responding](./assets/Employeetracker.gif)
 
-  The full video showing functionality can be found [here]()
+  The full video showing functionality can be found [here](https://youtu.be/oHAW60Mc65k)
 
   ## Table of Contents
   - [User Story](#user-story)
@@ -64,6 +64,16 @@ THEN I am prompted to select an employee to update and their new role and this i
   In order to use this application you will need clone this project repository to your computer. Then write on your terminal the the following commands:
 
   `npm i ` For the required pakages.
+
+  After open up your terminal in the db folder and run the following commands to create the data base on Postgres and get the seeds ino the database:
+
+  `psql -U postgres`
+
+  `\i schema.sql`
+
+  `\i seeds.sql`
+
+  Finally after make the .env.EXAMPLE file into an .env and add your user and password for your Postgres login to connect to the database and use the application.
 
   
   ## Usage

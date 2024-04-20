@@ -31,8 +31,8 @@ pool.connect((error) => {
         verticalLayout: "default",
         width: 80,
         whitespaceBreak: true,
-    })), 
-    console.log(``)
+    })),
+        console.log(``)
     console.log(`====================================================================================`);
     beginning();
 });
@@ -176,18 +176,18 @@ addEmployee = () => {
                     message: "Who is the manager of the new employee?",
                     choices: employees
 
-                }, 
+                },
             ])
                 .then((answers) => {
                     pool.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) SELECT ($1) AS first_name, ($2) AS last_name, ($3) AS role_id, ($4) AS manager_id`, [answers.firstname, answers.lastname, answers.role, answers.manager], (error, res) => {
                         if (error) throw error;
                         console.log(`Added ${answers.firstname} ${answers.lastname} to database.`);
                         beginning();
-                        
+
                     })
-                   
-                       
-                    
+
+
+
                 });
 
         })
