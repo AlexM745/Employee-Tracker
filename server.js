@@ -23,14 +23,17 @@ const pool = new Pool(
 pool.connect((error) => {
     if (error) throw error;
     console.log('Connected to the employeetracker_db database.')
+    console.log(`====================================================================================`);
+    console.log(``);
     console.log(figlet.textSync("Employee Tracker", {
         font: "Standard",
         horizontalLayout: "default",
         verticalLayout: "default",
         width: 80,
         whitespaceBreak: true,
-    })
-    );
+    })), 
+    console.log(``)
+    console.log(`====================================================================================`);
     beginning();
 });
 
@@ -46,8 +49,9 @@ beginning = () => {
             name: "start",
             message: "What Would you like to do?",
             choices: [
-                "View All Employess",
                 "View All Departments",
+                "View All Roles",
+                "View All Employess",
                 "Add Employee",
                 "Add Role",
                 "Add Department",
@@ -61,11 +65,14 @@ beginning = () => {
             // this switch is for the user input cases
             switch (answer.start) {
                 // these are the cases and breaks for the which ever the user selected
+                case "View All Departments":
+                    viewDepartments();
+                    break;
                 case "View All Employess":
                     viewEmployees();
                     break;
-                case "View All Departments":
-                    viewDepartments();
+                case "View All Roles":
+                    viewRoles();
                     break;
                 case "Add Employee":
                     addEmployee();
@@ -117,6 +124,20 @@ viewDepartments = () => {
         beginning();
     })
 }
+
+// see all the departments
+viewRoles = () => {
+    pool.query(`
+    SELECT roles.title, roles.id, department.department_name, roles.salary
+    FROM roles
+    JOIN department on roles.department_id = department.id;
+ `, (error, res) => {
+        if (error) throw error;
+        console.table(res.rows);
+        beginning();
+    })
+}
+
 // this function adds a new employee
 addEmployee = () => {
     pool.query(`SELECT * FROM roles;`, (error, res) => {
@@ -217,7 +238,7 @@ addRole = () => {
             }])
             .then((answers) => {
                 pool.query(`INSERT INTO roles (title, salary, department_id) VALUES($1,$2,$3)`, [answers.title, answers.salary, answers.departmentName], (error, res) => {
-                    if (error)throw error;
+                    if (error) throw error;
                     console.log(`Added ${answers.title} to database.`);
                     beginning();
                 })
@@ -236,7 +257,7 @@ updateRoles = () => {
             let employees = res.rows.map(employee => ({ name: employee.first_name + " " + employee.last_name, value: employee.id }));
 
             inquirer.prompt([
-            // to pick the employee to update
+                // to pick the employee to update
                 {
                     type: "rawlist",
                     name: "updateEmployee",
@@ -249,7 +270,7 @@ updateRoles = () => {
                     name: "newTitle",
                     message: "What is the new role of the employee?",
                     choices: roles
-                    
+
                 }])
                 // adding the anwers to the data base
                 .then((answers) => {
